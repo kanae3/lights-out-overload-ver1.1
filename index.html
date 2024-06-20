@@ -7,36 +7,35 @@
     @media (orientation: landscape) {
       #gameBoard {
         position: absolute;
-        top: 30vw;
-        left: 5vw;
+        top: min(29vw,290px);
+        left: min(5vw,50px);
       }
       #answerBoard {
         position: absolute;
-        top: 31vw;
-        left: 35vw;
+        top: min(30vw,300px);
+        left: min(35vw,350px);
       }
       .cell {
-        width: 6vw;
-        height: 6vw;
-        border: 0.2vw solid black;
+        width: min(6vw,60px);
+        height: min(6vw,60px);
+        border: min(0.2vw,20px) solid black;
         background-color: blue;
         display: inline-block;
       }
       .answercell {
-        width: 4vw;
-        height: 4vw;
-        border: 0.2vw solid black;
+        width: min(4vw,40px);
+        height: min(4vw,40px);
+        border: min(0.2vw,2px) solid black;
         background-color: blue;
         display: inline-block;
-        margin-left: 2vw;
+        margin-left: min(2vw,20px);
       }
       .space {
-        width: 5vw;
-        height: 6vw;
+        width: min(5vw,50px);;
+        height: min(6vw,60px);
         display: inline-block;
       }
       .circle {
-        height: 6vw;
         display: none;
       }
     }
@@ -83,16 +82,16 @@
     }
 
     h1{
-        font-size: 5vw;
+        font-size: min(5vw,50px);
     }
     #option{
-        font-size: 3vw;
+        font-size: min(3vw,30px);
     }
     #quizSelect{
-        font-size: 3vw;
+        font-size: min(3vw,30px);
     }
     label{
-        font-size: 3vw;
+        font-size: min(3vw,30px);
     }
     
   </style>
