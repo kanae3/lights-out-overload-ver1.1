@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ライツアウトパズルOVERLOAD</title>
+  <style>
+    /*横画面版*/
+    @media (orientation: landscape) {
+      #gameBoard {
+        position: absolute;
+        top: 30vw;
+        left: 5vw;
+      }
+      #answerBoard {
+        position: absolute;
+        top: 30vw;
+        left: 35vw;
+      }
+      .cell {
+        width: 6vw;
+        height: 6vw;
+        border: 0.2vw solid black;
+        background-color: blue;
+        display: inline-block;
+      }
+      .answercell {
+        width: 4vw;
+        height: 4vw;
+        border: 0.2vw solid black;
+        background-color: blue;
+        display: inline-block;
+        margin-left: 2vw;
+      }
+      .space {
+        width: 5vw;
+        height: 6vw;
+        display: inline-block;
+      }
+      .circle {
+        height: 6vw;
+        display: none;
+      }
+    }
+    /*縦画面版*/
+    @media (orientation: portrait) {
+      #gameBoard {
+        position: absolute;
+        top: 46vw;
+        left: 7vw;
+      }
+      #answerBoard {
+        position: absolute;
+        top: 16vw;
+        left: 58vw;
+        border: 0.7vw solid green;
+      }
+      .cell {
+        width: 10vw;
+        height: 10vw;
+        border: 0.2vw solid black;
+        background-color: blue;
+        display: inline-block;
+        margin-left: 7vw;
+        margin-top: 7vw;
+      }
+      .answercell {
+        width: 4vw;
+        height: 4vw;
+        border: 0.2vw solid black;
+        background-color: blue;
+        display: inline-block;
+        margin-left: 1vw;
+      }
+      .space {
+        height: 5vw;
+        display: inline-block;
+      }
+      .circle {
+        font-size: 5vw;
+        color: green;
+        height: 7vw;
+        margin-left: 0.5vw;
+      }
+    }
+
+    h1{
+        font-size: 5vw;
+    }
+    #option{
+        font-size: 3vw;
+    }
+    #quizSelect{
+        font-size: 3vw;
+    }
+    label{
+        font-size: 3vw;
+    }
+    
+  </style>
+</head>
+<body>
+  <h1>ライツアウトパズルOVERLOAD</h1>
+  
+  <div>
+    <label for="option">難易度・設定の選択:</label>
+    <select id="option" onChange="window.location.href=this.value">
+      <option value="https://kanae3.github.io/lights-out-overload-ver1.1/">OVERLOAD</option>
+      <option value="https://kanae3.github.io/lights-out-random-ver1.1/">RANDOM</option>
+      <option value="https://kanae3.github.io/lights-out-hard-ver1.1/">HARD</option>
+    </select>
+    <br>
+    <label for="quizSelect">問題の選択:</label>
+    <select id="quizSelect" onclick="changeQuiz()">
+      <option value=0>ランダム</option>
+      <option value=1>斜め赤4(1)</option>
+      <option value=2>斜め赤4(2)</option>
+      <option value=3>斜め赤4(3)</option>
+      <option value=4>斜め赤5(1)</option>
+      <option value=5>斜め赤5(2)</option>
+      <option value=6>斜め赤7(1)</option>
+      <option value=7>斜め赤7(2)</option>
+      <option value=8>斜め半々(1)</option>
+      <option value=9>斜め半々(2)</option>
+      <option value=10>斜め半々(3)</option>
+      <option value=11>斜め青7(1)</option>
+      <option value=12>斜め青7(2)</option>
+      <option value=13>斜め青7(3)</option>
+      <option value=14>斜め青5(1)</option>
+      <option value=15>斜め青5(2)</option>
+      <option value=16>斜め青5(3)</option>
+      <option value=17>縦ボーダー赤3(1)</option>
+      <option value=18>縦ボーダー赤4(1)</option>
+      <option value=19>縦ボーダー赤5(1)</option>
+      <option value=20>縦ボーダー赤7(1)</option>
+      <option value=21>縦ボーダー赤7(2)</option>
+      <option value=22>縦ボーダー赤7(3)</option>
+      <option value=23>縦ボーダー半々(1)</option>
+      <option value=24>縦ボーダー半々(2)</option>
+      <option value=25>縦ボーダー半々(3)</option>
+      <option value=26>縦ボーダー青7(1)</option>
+      <option value=27>縦ボーダー青7(1)</option>
+      <option value=28>縦ボーダー青7(1)</option>
+      <option value=29>縦ボーダー青7(1)</option>
+      <option value=30>円形赤4(1)</option>
+      <option value=31>円形赤5(1)</option>
+      <option value=32>円形赤7(1)</option>
+      <option value=33>円形半々(1)</option>
+      <option value=34>円形半々(2)</option>
+      <option value=35>円形青7(1)</option>
+      <option value=36>円形青5(1)</option>
+      <option value=37>円形青3(1)</option>
+      <option value=38>四方形赤4(1)</option>
+      <option value=39>四方形赤4(2)</option>
+      <option value=40>四方形赤5(1)</option>
+      <option value=41>四方形赤5(2)</option>
+      <option value=42>四方形赤7(1)</option>
+      <option value=43>四方形赤7(2)</option>
+      <option value=44>四方形半々(1)</option>
+      <option value=45>四方形青5(1)</option>
+      
+    </select>
+  </div>
+  
+  <div id="gameBoard">
+    <div class="cell" onclick="toggleLights(0, 0)"></div>
+    <div class="cell" onclick="toggleLights(0, 1)"></div>
+    <div class="cell" onclick="toggleLights(0, 2)"></div>
+    <div class="cell" onclick="toggleLights(0, 3)"></div>
+    <br>
+    <div class="cell" onclick="toggleLights(1, 0)"></div>
+    <div class="cell" onclick="toggleLights(1, 1)"></div>
+    <div class="cell" onclick="toggleLights(1, 2)"></div>
+    <div class="cell" onclick="toggleLights(1, 3)"></div>
+    <br>
+    <div class="cell" onclick="toggleLights(2, 0)"></div>
+    <div class="cell" onclick="toggleLights(2, 1)"></div>
+    <div class="cell" onclick="toggleLights(2, 2)"></div>
+    <div class="cell" onclick="toggleLights(2, 3)"></div>
+    <br>
+    <div class="cell" onclick="toggleLights(3, 0)"></div>
+    <div class="cell" onclick="toggleLights(3, 1)"></div>
+    <div class="cell" onclick="toggleLights(3, 2)"></div>
+    <div class="cell" onclick="toggleLights(3, 3)"></div>
+  </div>
+  
+  <div id="answerBoard">
+    <div class="circle"><b>◯</b></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <br>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="space"></div>
+    <br>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="space"></div>
+    <br>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="answercell"></div>
+    <div class="space"></div>
+  </div>
+
+
+  <script>
+    const size = 4;
+    const quiz = [
+      {name: "斜め赤4(1)",
+        grid: [
+          [false, true, false, false],
+          [false, false, false, false],
+          [false, true, false, false],
+          [false, false, true, true]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め赤4(2)",
+        grid: [
+          [true, false, false, true],
+          [false, false, false, false],
+          [false, false, false, false],
+          [true, false, false, true]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め赤4(3)",
+      grid: [
+          [false, false, false, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, false, false, false]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め赤5(1)",
+      grid: [
+          [false, true, false, false],
+          [false, false, true, false],
+          [true, true, true, false],
+          [false, false, false, false]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め赤5(2)",
+      grid: [
+          [false, false, true, true],
+          [false, false, false, false],
+          [false, false, true, true],
+          [false, false, false, true]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め赤7(1)",
+      grid: [
+          [false, true, false, true],
+          [false, true, true, false],
+          [true, false, true, false],
+          [false, false, false, true]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め赤7(2)",
+      grid: [
+          [true, true, false, true],
+          [false, false, true, true],
+          [false, false, false, false],
+          [true, false, false, true]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め半々(1)",
+      grid: [
+          [true, true, false, true],
+          [true, true, false, true],
+          [false, true, false, false],
+          [false, true, false, false]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め半々(2)",
+      grid: [
+          [true, false, false, true],
+          [false, false, true, true],
+          [true, true, true, false],
+          [false, false, false, true]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め半々(3)",
+      grid: [
+          [true, true, false, true],
+          [false, false, true, false],
+          [true, false, true, true],
+          [false, true, false, false]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め青7(1)",
+      grid: [
+          [false, true, true, false],
+          [false, true, true, true],
+          [true, false, true, true],
+          [false, false, true, false]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め青7(2)",
+      grid: [
+          [true, true, false, false],
+          [false, false, true, true],
+          [true, true, false, true],
+          [false, true, true, false]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め青7(3)",
+      grid: [
+          [true, false, false, true],
+          [false, false, true, true],
+          [true, true, false, true],
+          [false, true, false, true]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め青5(1)",
+      grid: [
+          [true, false, true, true],
+          [true, true, false, true],
+          [false, false, false, true],
+          [true, true, true, true]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め青5(2)",
+      grid: [
+          [true, false, true, false],
+          [true, false, true, false],
+          [true, true, false, true],
+          [true, true, true, true]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "斜め青5(3)",
+      grid: [
+          [true, true, false, false],
+          [true, false, true, true],
+          [true, true, false, false],
+          [true, true, true, true]
+        ],
+        answergrid: [
+          [true, true, true, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, true, true, true]
+        ]
+      },
+      {name: "縦ボーダー赤3(1)",
+      grid: [
+          [false, false, true, false],
+          [false, false, false, false],
+          [false, false, false, true],
+          [true, false, false, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー赤4(1)",
+      grid: [
+          [false, false, false, false],
+          [true, true, false, false],
+          [false, false, false, true],
+          [true, false, false, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー赤5(1)",
+      grid: [
+          [false, true, false, false],
+          [false, false, false, false],
+          [false, false, false, true],
+          [true, true, true, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー赤7(1)",
+      grid: [
+          [false, false, true, true],
+          [true, false, false, true],
+          [true, true, false, false],
+          [true, false, false, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー赤7(2)",
+      grid: [
+          [false, false, true, false],
+          [true, false, false, false],
+          [true, false, false, true],
+          [true, true, true, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー赤7(3)",
+      grid: [
+          [true, false, false, false],
+          [true, true, false, true],
+          [true, false, false, false],
+          [false, true, false, true]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー半々(1)",
+      grid: [
+          [true, false, false, false],
+          [true, true, false, true],
+          [true, false, true, true],
+          [false, false, false, true]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー半々(2)",
+      grid: [
+          [false, false, true, false],
+          [true, false, false, true],
+          [true, false, true, true],
+          [true, true, false, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー半々(3)",
+      grid: [
+          [false, true, false, true],
+          [true, false, false, true],
+          [false, true, true, false],
+          [false, true, false, true]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー青7(1)",
+      grid: [
+          [false, false, false, false],
+          [false, true, true, true],
+          [true, true, false, true],
+          [true, true, false, true]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー青7(2)",
+      grid: [
+          [false, false, true, true],
+          [false, true, true, false],
+          [true, true, false, false],
+          [true, true, true, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー青7(3)",
+      grid: [
+          [true, true, true, false],
+          [false, true, false, false],
+          [true, true, true, false],
+          [false, true, false, true]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "縦ボーダー青7(4)",
+      grid: [
+          [false, true, false, true],
+          [true, true, true, false],
+          [true, true, false, true],
+          [false, false, false, true]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false],
+          [false, true, true, false]
+        ]
+      },
+      {name: "円形赤4(1)",
+      grid: [
+          [false, false, false, true],
+          [false, false, true, false],
+          [false, true, false, false],
+          [true, false, false, false]
+        ],
+        answergrid: [
+          [true, true, true, true],
+          [true, false, false, true],
+          [true, false, false, true],
+          [true, true, true, true]
+        ]
+      },
+      {name: "円形赤5(1)",
+      grid: [
+          [false, true, false, false],
+          [false, false, true, false],
+          [true, false, false, false],
+          [true, false, false, true]
+        ],
+        answergrid: [
+          [true, true, true, true],
+          [true, false, false, true],
+          [true, false, false, true],
+          [true, true, true, true]
+        ]
+      },
+      {name: "円形赤7(1)",
+      grid: [
+          [true, false, true, false],
+          [false, true, true, false],
+          [false, false, true, true],
+          [false, false, false, true]
+        ],
+        answergrid: [
+          [true, true, true, true],
+          [true, false, false, true],
+          [true, false, false, true],
+          [true, true, true, true]
+        ]
+      },
+      {name: "円形半々(1)",
+      grid: [
+          [false, true, false, true],
+          [false, true, false, false],
+          [false, true, true, false],
+          [true, false, true, true]
+        ],
+        answergrid: [
+          [true, true, true, true],
+          [true, false, false, true],
+          [true, false, false, true],
+          [true, true, true, true]
+        ]
+      },
+      {name: "円形半々(2)",
+      grid: [
+          [false, false, true, true],
+          [true, false, false, true],
+          [false, true, true, false],
+          [false, false, true, true]
+        ],
+        answergrid: [
+          [true, true, true, true],
+          [true, false, false, true],
+          [true, false, false, true],
+          [true, true, true, true]
+        ]
+      },
+      {name: "円形青7(1)",
+      grid: [
+          [false, true, false, true],
+          [true, false, false, true],
+          [true, true, false, false],
+          [true, true, true, false]
+        ],
+        answergrid: [
+          [true, true, true, true],
+          [true, false, false, true],
+          [true, false, false, true],
+          [true, true, true, true]
+        ]
+      },
+      {name: "円形青5(1)",
+      grid: [
+          [true, true, false, true],
+          [true, true, true, false],
+          [false, true, true, false],
+          [true, true, true, false]
+        ],
+        answergrid: [
+          [true, true, true, true],
+          [true, false, false, true],
+          [true, false, false, true],
+          [true, true, true, true]
+        ]
+      },
+      {name: "円形青3(1)",
+      grid: [
+          [true, true, false, true],
+          [true, true, true, true],
+          [true, true, true, false],
+          [false, true, true, true]
+        ],
+        answergrid: [
+          [true, true, true, true],
+          [true, false, false, true],
+          [true, false, false, true],
+          [true, true, true, true]
+        ]
+      },
+      {name: "四方形赤4(1)",
+      grid: [
+          [false, false, false, true],
+          [false, false, true, false],
+          [false, true, false, false],
+          [true, false, false, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [true, true, true, true],
+          [true, true, true, true],
+          [false, true, true, false]
+        ]
+      },
+      {name: "四方形赤4(2)",
+      grid: [
+          [false, false, true, true],
+          [false, true, false, false],
+          [false, false, false, false],
+          [false, true, false, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [true, true, true, true],
+          [true, true, true, true],
+          [false, true, true, false]
+        ]
+      },
+      {name: "四方形赤5(1)",
+      grid: [
+          [false, true, false, false],
+          [true, false, false, false],
+          [false, false, false, false],
+          [false, true, true, true]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [true, true, true, true],
+          [true, true, true, true],
+          [false, true, true, false]
+        ]
+      },
+      {name: "四方形赤5(2)",
+      grid: [
+          [false, false, true, true],
+          [false, false, false, false],
+          [false, true, false, true],
+          [true, false, false, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [true, true, true, true],
+          [true, true, true, true],
+          [false, true, true, false]
+        ]
+      },
+      {name: "四方形赤7(1)",
+      grid: [
+          [true, false, true, true],
+          [false, false, true, false],
+          [false, true, true, true],
+          [false, false, false, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [true, true, true, true],
+          [true, true, true, true],
+          [false, true, true, false]
+        ]
+      },
+      {name: "四方形赤7(2)",
+      grid: [
+          [true, true, true, false],
+          [true, false, false, false],
+          [true, false, false, true],
+          [false, true, false, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [true, true, true, true],
+          [true, true, true, true],
+          [false, true, true, false]
+        ]
+      },
+      {name: "四方形半々(1)",
+      grid: [
+          [true, false, true, false],
+          [false, false, false, false],
+          [true, true, true, true],
+          [true, false, true, false]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [true, true, true, true],
+          [true, true, true, true],
+          [false, true, true, false]
+        ]
+      },
+      {name: "四方形青5(1)",
+      grid: [
+          [true, true, false, false],
+          [true, true, true, true],
+          [true, false, true, false],
+          [false, true, true, true]
+        ],
+        answergrid: [
+          [false, true, true, false],
+          [true, true, true, true],
+          [true, true, true, true],
+          [false, true, true, false]
+        ]
+      },
+      {name: "Default",
+        grid: [
+          [false, false, false, false],
+          [false, false, false, false],
+          [false, false, false, false],
+          [false, false, false, false]
+        ],
+        answergrid: [
+          [true, true, true, true],
+          [true, true, true, true],
+          [true, true, true, true],
+          [true, true, true, true]
+        ]
+      }
+    ];
+
+    const grid= [
+          [false, false, false, false],
+          [false, false, false, false],
+          [false, false, false, false],
+          [false, false, false, false]
+    ];
+    
+    let Quiz = quiz[quiz.length-1];
+
+    function initializeBoard() {
+      const gameBoard = document.getElementById("gameBoard");
+      const answerBoard = document.getElementById("answerBoard");
+      const cells = gameBoard.getElementsByClassName("cell");
+      const answercells = answerBoard.getElementsByClassName("answercell");
+
+      for (let i = 0; i < cells.length; i++) {
+        const row = Math.floor(i / size);
+        const col = i % size;
+
+        const cell = cells[i];
+        cell.style.backgroundColor = grid[row][col] ? "red" : "blue";
+        cell.style.cursor = "pointer";
+
+        const answercell = answercells[i];
+        answercell.style.backgroundColor = Quiz.answergrid[row][col] ? "red" : "blue";
+      }
+    }
+
+    function toggleLights(row, col) {
+      grid[row][col] = !grid[row][col];
+      if (row > 0) {
+        grid[row - 1][col] = !grid[row - 1][col];
+      }
+      if (row < size - 1) {
+        grid[row + 1][col] = !grid[row + 1][col];
+      }
+      if (col > 0) {
+        grid[row][col-1] = !grid[row][col-1];
+      }
+      if (col < size - 1) {
+        grid[row][col+1] = !grid[row][col+1];
+      }
+      initializeBoard();
+      checkWin();
+    }
+
+    function checkWin() {
+      const gameBoard = document.getElementById("gameBoard");
+      const cells = gameBoard.getElementsByClassName("cell");
+
+      for (let i = 0; i < cells.length; i++) {
+        const row = Math.floor(i / size);
+        const col = i % size;
+
+        if (grid[row][col] !== Quiz.answergrid[row][col]) {
+          return;
+        }
+      }
+      alert("おめでとう！パズルを解きました！");
+    }
+
+    function setgrid(){
+        const cells = gameBoard.getElementsByClassName("cell");
+        for (let i = 0; i < cells.length; i++) {
+            const row = Math.floor(i / size);
+            const col = i % size;
+            grid[row][col] = Quiz.grid[row][col];
+        }
+    }
+
+    function changeQuiz() {
+      const selectElement = document.getElementById("quizSelect");
+      const selectedQuiz = selectElement.value;
+      const cells = gameBoard.getElementsByClassName("cell");
+      if (selectedQuiz === "0") {
+        Quiz = quiz[Math.floor(Math.random() * (quiz.length-1))];
+      } else {
+        Quiz = quiz[selectedQuiz-1];
+      }
+      
+      setgrid();
+      initializeBoard();
+    }
+
+    initializeBoard();
+  </script>
+</body>
+</html>
